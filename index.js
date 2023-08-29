@@ -1,21 +1,24 @@
 const axios = require("axios");
 const cron = require("node-cron");
-
-const sendReq = async () => {
+const moment = require("moment");
+const sendReq = async (bank,domain) => {
   const respone = await axios.get(
-    "https://meoconbantuongtac.com.vn/cronJob/recharge-transfer/momo/meoconbantuongtac.com.vn"
+    `https://meoconbantuongtac.com.vn/cronJob/recharge-transfer/${bank}/${domain}`
   );
-  console.log(respone.data);
+  if(respone.data){
+    console.log(`Co don hang ${bank} moi`)
+  }
+  else{
+    const date = new Date();
+    const formatDate = moment(date).format("DD/MM/YYYY HH:mm:ss");
+    console.log("Khong co do nao next "+formatDate);
+  }
+
 };
 
-const sendReq1 = async () => {
-  const respone = await axios.get(
-    "https://meoconbantuongtac.com.vn/cronJob/recharge-transfer/mbbank/meoconbantuongtac.com.vn"
-  );
-  console.log(respone.data);
-};
-cron.schedule("*/15 * * * * *", async () => {
-  await sendReq();
-  await sendReq1();
 
+cron.schedule("*/10 * * * * *", async () => {
+  // await sendReq('momo','meoconbantuongtac.com.vn');
+  await sendReq('mbbank','meoconbantuongtac.com.vn');
 });
+  
